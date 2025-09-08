@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Muhammed E-commerce Churn Predictor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-chart-line me-2"></i>Muhammed's E-commerce Churn Predictor
+            </a>
+            <div class="ms-auto">
+                <span id="apiStatus" class="api-status status-warning">
+                    <i class="fas fa-circle-notch fa-spin"></i> Checking...
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Connection Help Alert -->
+        <div id="connectionHelp" class="alert alert-warning connection-help">
+            <h5><i class="fas fa-wifi"></i> Connection Issues</h5>
+            <p>Unable to connect to the API server. Please ensure:</p>
+            <ol>
+                <li>The FastAPI server is running on port 8000</li>
+                <li>You've added CORS middleware to your FastAPI app</li>
+                <li>There are no firewall restrictions blocking the connection</li>
+            </ol>
+            <p class="mb-0">Check the browser console for more detailed error information.</p>
+        </div>
+
+        <div class="row">
+            <div class="col-12">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="single-tab" data-bs-toggle="tab" data-bs-target="#single" type="button" role="tab">
+                            <i class="fas fa-user me-2"></i>Single Prediction
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="batch-tab" data-bs-toggle="tab" data-bs-target="#batch" type="button" role="tab">
+                            <i class="fas fa-users me-2"></i>Batch Prediction
+                        </button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="history-tab" data-bs-toggle="tab" data-bs-target="#history" type="button" role="tab">
+                            <i class="fas fa-history me-2"></i>Prediction History
+                        </button>
+                    </li>
+                </ul>
+                
+                <div class="tab-content" id="myTabContent">
+                    <!-- Single Prediction Tab -->
+                    <div class="tab-pane fade show active" id="single" role="tabpanel">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="card glass-card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="fas fa-user-circle me-2"></i>Customer Details</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <form id="singlePredictionForm">
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="tenure" class="form-label">Tenure (months)</label>
+                                                    <input type="number" class="form-control" id="tenure" min="0" value="12" required>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="numberofaddress" class="form-label">Number of Addresses</label>
+                                                    <input type="number" class="form-control" id="numberofaddress" min="0" value="2" required>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="cashbackamount" class="form-label">Cashback Amount ($)</label>
+                                                    <input type="number" step="0.01" class="form-control" id="cashbackamount" min="0" value="25.50" required>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="daysincelastorder" class="form-label">Days Since Last Order</label>
+                                                    <input type="number" class="form-control" id="daysincelastorder" min="0" value="15" required>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="ordercount" class="form-label">Order Count</label>
+                                                    <input type="number" class="form-control" id="ordercount" min="0" value="8" required>
+                                                </div>
+                                                <div class="col-md-6 mb-3">
+                                                    <label for="satisfactionscore" class="form-label">Satisfaction Score (1-5)</label>
+                                                    <input type="number" class="form-control" id="satisfactionscore" min="1" max="5" value="4" required>
+                                                </div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100 btn-gradient">
+                                                <span id="singleSubmitText">Predict Churn</span>
+                                                <span id="singleSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card glass-card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Prediction Result</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="singlePredictionResult" class="prediction-result" style="display: none;">
+                                            <div class="text-center mb-4">
+                                                <div class="prediction-icon mb-3" id="predictionIcon"></div>
+                                                <h4 class="mb-2">Churn Prediction: <span id="churnPrediction"></span></h4>
+                                                <div class="probability-display mb-3">
+                                                    <span id="churnProbability"></span>
+                                                </div>
+                                                <div id="riskLevel" class="risk-badge"></div>
+                                            </div>
+                                            <h6 class="section-title"><i class="fas fa-lightbulb me-2"></i>Insights:</h6>
+                                            <div id="insightsList" class="insights-container"></div>
+                                        </div>
+                                        <div id="noSinglePrediction" class="empty-state">
+                                            <i class="fas fa-arrow-left fa-3x mb-3"></i>
+                                            <p>Submit customer data to see prediction results</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Batch Prediction Tab -->
+                    <div class="tab-pane fade" id="batch" role="tabpanel">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="card glass-card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="fas fa-cloud-upload-alt me-2"></i>Upload Customer Data</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="info-card">
+                                            <h6><i class="fas fa-info-circle me-2"></i>File Requirements</h6>
+                                            <ul>
+                                                <li>CSV or Excel format</li>
+                                                <li>Include required columns</li>
+                                                <li>Column names are auto-normalized</li>
+                                                <li><a href="/sample.csv" download class="download-link">
+                                                    <i class="fas fa-download me-1"></i>Download sample CSV
+                                                </a></li>
+                                            </ul>
+                                        </div>
+                                        <form id="batchPredictionForm" class="dropzone" id="fileDropzone">
+                                            <div class="file-upload-area">
+                                                <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                                                <p>Drag & drop your file here or click to browse</p>
+                                                <input class="form-control" type="file" id="batchFile" accept=".csv,.xlsx,.xls" required>
+                                                <div class="file-info" id="fileInfo"></div>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100 btn-gradient mt-3">
+                                                <span id="batchSubmitText">Process Batch Prediction</span>
+                                                <span id="batchSpinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none;"></span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="card glass-card">
+                                    <div class="card-header">
+                                        <h5 class="mb-0"><i class="fas fa-list-alt me-2"></i>Batch Results</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="batchResults">
+                                            <div id="noBatchResults" class="empty-state">
+                                                <i class="fas fa-cloud-upload-alt fa-3x mb-3"></i>
+                                                <p>Upload a file to process batch predictions</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- History Tab -->
+                    <div class="tab-pane fade" id="history" role="tabpanel">
+                        <div class="card glass-card">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Prediction History</h5>
+                                <button class="btn btn-outline-primary btn-sm refresh-btn" id="refreshHistory">
+                                    <i class="fas fa-sync-alt"></i> Refresh
+                                </button>
+                            </div>
+                            <div class="card-body">
+                                <div id="historyContent">
+                                    <div class="loading-state">
+                                        <div class="spinner-border text-primary" role="status">
+                                            <span class="visually-hidden">Loading...</span>
+                                        </div>
+                                        <p class="mt-3">Loading prediction history...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

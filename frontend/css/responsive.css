@@ -1,0 +1,131 @@
+/* ===== RESPONSIVE DESIGN ===== */
+@media (max-width: 768px) {
+    .container {
+        padding: 0 1rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.2rem;
+    }
+    
+    .nav-tabs .nav-link {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    
+    .glass-card {
+        margin-bottom: 1rem;
+    }
+    
+    .card-header {
+        padding: 1rem;
+    }
+    
+    .prediction-icon {
+        font-size: 3rem;
+    }
+    
+    .probability-display {
+        font-size: 1.25rem;
+    }
+    
+    .file-upload-area {
+        padding: 1.5rem;
+    }
+    
+    .empty-state {
+        padding: 2rem 1rem;
+    }
+    
+    .info-card {
+        padding: 1rem;
+    }
+    
+    .history-item {
+        padding: 1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) fixed;
+    }
+    
+    .navbar {
+        padding: 0.5rem 1rem;
+    }
+    
+    .api-status {
+        font-size: 0.7rem;
+        padding: 0.4rem 0.8rem;
+    }
+    
+    .btn-gradient {
+        padding: 0.6rem 1.5rem;
+        font-size: 0.9rem;
+    }
+    
+    .form-control {
+        padding: 0.6rem 0.8rem;
+    }
+    
+    .tab-content {
+        padding: 1rem 0;
+    }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    :root {
+        --glass-bg: rgba(45, 55, 72, 0.95);
+        --light-color: #2d3748;
+        --dark-color: #f7fafc;
+    }
+    
+    .glass-card {
+        background: var(--glass-bg);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .form-control {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+    
+    .form-control:focus {
+        background: rgba(255, 255, 255, 0.15);
+        color: white;
+    }
+    
+    .insight-item {
+        background: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: white;
+    }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .glass-card {
+        background: white;
+        border: 2px solid var(--primary-color);
+    }
+    
+    .btn-gradient {
+        background: var(--primary-color);
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+    
+    .glass-card:hover {
+        transform: none;
+    }
+}

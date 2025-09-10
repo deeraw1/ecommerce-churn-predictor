@@ -1,5 +1,5 @@
 // API base URL - point to your FastAPI server
-const API_BASE = 'http://127.0.0.1:8000';
+const API_BASE = '';
 
 // DOM elements
 const apiStatus = document.getElementById('apiStatus');
